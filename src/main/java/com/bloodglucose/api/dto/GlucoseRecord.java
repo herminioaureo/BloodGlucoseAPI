@@ -1,4 +1,4 @@
-package dto;
+package com.bloodglucose.api.dto;
 
 import java.util.Date;
 
