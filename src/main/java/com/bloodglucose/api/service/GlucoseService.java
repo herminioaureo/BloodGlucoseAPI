@@ -1,5 +1,6 @@
 package com.bloodglucose.api.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,23 @@ public class GlucoseService {
 	private GlucoseRepository repository;
 	
 	public void saveGlucose(GlucoseRecord glucose) throws Exception {
-		
 		GlucoseEntity entity = converter.convertToEntity(glucose);
 		entity.setUuid(UUID.randomUUID().toString());
 		
 		repository.save(entity);
-		
+	}
+
+	public List<GlucoseRecord> getGlucoseList() {
+		List<GlucoseRecord> recordList = converter.convertToRecord(repository.findAll());
+
+		return recordList;
+	}
+
+	public List<GlucoseRecord> getGlucoseListByMeal(String meal) {
+		List<GlucoseRecord> recordList = converter.convertToRecord(repository.findByMeal(meal));
+
+		return recordList;
+
 	}
 	
 }

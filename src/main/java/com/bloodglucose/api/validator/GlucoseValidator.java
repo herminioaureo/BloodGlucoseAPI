@@ -18,6 +18,5 @@ public class GlucoseValidator {
 		
 		return GlucoseEnum.OK.toString();
 	}
-	
 
 }

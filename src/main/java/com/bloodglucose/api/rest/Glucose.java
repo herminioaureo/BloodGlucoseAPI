@@ -4,15 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.bloodglucose.api.dto.GlucoseRecord;
 import com.bloodglucose.api.service.GlucoseService;
 import com.bloodglucose.api.util.GlucoseEnum;
 import com.bloodglucose.api.validator.GlucoseValidator;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("glucoseapi")
@@ -24,7 +25,9 @@ public class Glucose {
 	@Autowired
 	private GlucoseValidator validator;
 	
-	@PostMapping(path = "glucose", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "glucose",
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity save(@RequestBody GlucoseRecord glucose) {
 
 		 try {
@@ -44,4 +47,37 @@ public class Glucose {
 		 
 	 }
 
+	@GetMapping (path = "listAll", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity listAll() {
+
+		try {
+			List<GlucoseRecord> list = service.getGlucoseList();
+			return ResponseEntity.status(HttpStatus.OK).body(list);
+
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+		}
+	}
+
+	/**
+	 * Metodo responsavel por retornar os valores da glicemia dado uma refeicao. <br>
+	 * Exemplo de url: <code>http://localhost:8080/glucoseapi/listByMeal?meal=lanche</code>
+	 * @param meal
+	 * @return lista de glicemias daquela refeicao
+	 */
+	@GetMapping (path = "listByMeal", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity listByMeal(String meal) {
+
+		if (StringUtils.isNotEmpty(meal)) {
+			try {
+				List<GlucoseRecord> list = service.getGlucoseListByMeal(meal);
+				return ResponseEntity.status(HttpStatus.OK).body(list);
+
+			} catch (Exception ex) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+			}
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Refeicao nao informada");
+		}
+	}
 }
