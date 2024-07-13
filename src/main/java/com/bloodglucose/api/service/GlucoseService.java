@@ -1,5 +1,6 @@
 package com.bloodglucose.api.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,7 +38,18 @@ public class GlucoseService {
 		List<GlucoseRecord> recordList = converter.convertToRecord(repository.findByMeal(meal));
 
 		return recordList;
+	}
 
+	public List<GlucoseRecord> getGlucoseListByDate(Date date) {
+		List<GlucoseRecord> recordList = converter.convertToRecord(repository.findByDate(date));
+
+		return recordList;
+	}
+
+	public List<GlucoseRecord> getGlucoseListByDateBetwee(Date startDate, Date endDate) {
+		List<GlucoseRecord> recordList = converter.convertToRecord(repository.findByDateBetween(startDate, endDate));
+
+		return recordList;
 	}
 	
 }

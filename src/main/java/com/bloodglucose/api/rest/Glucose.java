@@ -1,6 +1,7 @@
 package com.bloodglucose.api.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import com.bloodglucose.api.validator.GlucoseValidator;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -47,8 +49,13 @@ public class Glucose {
 		 
 	 }
 
-	@GetMapping (path = "listAll", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity listAll() {
+	/**
+	 * Metodo responsavel por retornar todos os valores da glicemia. <br>
+	 * Exemplo de url: <code>http://localhost:8080/glucoseapi/findAll</code>
+	 * @return lista com todas as glicemias
+	 */
+	@GetMapping (path = "findAll", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity findAll() {
 
 		try {
 			List<GlucoseRecord> list = service.getGlucoseList();
@@ -61,12 +68,12 @@ public class Glucose {
 
 	/**
 	 * Metodo responsavel por retornar os valores da glicemia dado uma refeicao. <br>
-	 * Exemplo de url: <code>http://localhost:8080/glucoseapi/listByMeal?meal=lanche</code>
+	 * Exemplo de url: <code>http://localhost:8080/glucoseapi/findByMeal?meal=lanche</code>
 	 * @param meal
 	 * @return lista de glicemias daquela refeicao
 	 */
-	@GetMapping (path = "listByMeal", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity listByMeal(String meal) {
+	@GetMapping (path = "findByMeal", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity findByMeal(@RequestParam String meal) {
 
 		if (StringUtils.isNotEmpty(meal)) {
 			try {
@@ -78,6 +85,52 @@ public class Glucose {
 			}
 		} else {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Refeicao nao informada");
+		}
+	}
+
+	/**
+	 * Metodo responsavel por retornar os valores da glicemia dado uma data. <br>
+	 * Exemplo de url: <code>http://localhost:8080/glucoseapi/findByDate?date=2024-07-13</code>
+	 * @param date
+	 * @return
+	 */
+	@GetMapping (path = "findByDate", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity findByDate(@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
+
+		if (date != null) {
+			try {
+				List<GlucoseRecord> list = service.getGlucoseListByDate(date);
+				return ResponseEntity.status(HttpStatus.OK).body(list);
+
+			} catch (Exception ex) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+			}
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Data nao informada");
+		}
+	}
+
+	/**
+	 * Metodo responsavel por retornar os valores da glicemia dado uma data. <br>
+	 * Exemplo de url: <code>http://localhost:8080/glucoseapi/findByDateBetween?startDate=2024-07-13&endDate=2024-07-14</code>
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	@GetMapping (path = "findByDateBetween", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity findByDateBetween(@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date startDate,
+											@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date endDate) {
+
+		if (startDate != null && endDate != null) {
+			try {
+				List<GlucoseRecord> list = service.getGlucoseListByDateBetwee(startDate, endDate);
+				return ResponseEntity.status(HttpStatus.OK).body(list);
+
+			} catch (Exception ex) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+			}
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Datas nao informadas");
 		}
 	}
 }

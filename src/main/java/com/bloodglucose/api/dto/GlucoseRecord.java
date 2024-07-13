@@ -2,6 +2,6 @@ package com.bloodglucose.api.dto;
 
 import java.util.Date;
 
-public record GlucoseRecord(String meal, Integer value, Date datetime) {
+public record GlucoseRecord(Long id, String meal, Integer value, Date datetime) {
 
 }
