@@ -1,9 +1,9 @@
-package com.bloodglucose.api.validator;
+package com.bloodglucose.api.core.validator;
 
 import org.springframework.stereotype.Service;
 
-import com.bloodglucose.api.dto.GlucoseRecord;
-import com.bloodglucose.api.util.GlucoseEnum;
+import com.bloodglucose.api.core.dto.GlucoseRecord;
+import com.bloodglucose.api.core.util.GlucoseEnum;
 
 @Service
 public class GlucoseValidator {

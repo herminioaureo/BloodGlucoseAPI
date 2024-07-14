@@ -1,4 +1,4 @@
-package com.bloodglucose.api.rest;
+package com.bloodglucose.api.adapter.in;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -7,10 +7,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.bloodglucose.api.dto.GlucoseRecord;
-import com.bloodglucose.api.service.GlucoseService;
-import com.bloodglucose.api.util.GlucoseEnum;
-import com.bloodglucose.api.validator.GlucoseValidator;
+import com.bloodglucose.api.core.dto.GlucoseRecord;
+import com.bloodglucose.api.port.in.GlucosePortIn;
+import com.bloodglucose.api.core.util.GlucoseEnum;
+import com.bloodglucose.api.core.validator.GlucoseValidator;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,11 +19,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("glucoseapi")
-public class Glucose {
+public class GlucoseAdapterIn {
 	
 	@Autowired
-	private GlucoseService service;
-	
+	private GlucosePortIn portIn;
+
 	@Autowired
 	private GlucoseValidator validator;
 	
@@ -36,7 +36,7 @@ public class Glucose {
 			 String validationMeessage = validator.validateValues(glucose);
 			 
 			 if (GlucoseEnum.OK.toString().equals(validationMeessage)) {
-				 service.saveGlucose(glucose);
+				 portIn.saveGlucose(glucose);
 			 } else {
 				 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationMeessage);
 			 }
@@ -58,7 +58,7 @@ public class Glucose {
 	public ResponseEntity findAll() {
 
 		try {
-			List<GlucoseRecord> list = service.getGlucoseList();
+			List<GlucoseRecord> list = portIn.getGlucoseList();
 			return ResponseEntity.status(HttpStatus.OK).body(list);
 
 		} catch (Exception ex) {
@@ -77,7 +77,7 @@ public class Glucose {
 
 		if (StringUtils.isNotEmpty(meal)) {
 			try {
-				List<GlucoseRecord> list = service.getGlucoseListByMeal(meal);
+				List<GlucoseRecord> list = portIn.getGlucoseListByMeal(meal);
 				return ResponseEntity.status(HttpStatus.OK).body(list);
 
 			} catch (Exception ex) {
@@ -92,14 +92,14 @@ public class Glucose {
 	 * Metodo responsavel por retornar os valores da glicemia dado uma data. <br>
 	 * Exemplo de url: <code>http://localhost:8080/glucoseapi/findByDate?date=2024-07-13</code>
 	 * @param date
-	 * @return
+	 * @return lista de refeicoes daquela data
 	 */
 	@GetMapping (path = "findByDate", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity findByDate(@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
 
 		if (date != null) {
 			try {
-				List<GlucoseRecord> list = service.getGlucoseListByDate(date);
+				List<GlucoseRecord> list = portIn.getGlucoseListByDate(date);
 				return ResponseEntity.status(HttpStatus.OK).body(list);
 
 			} catch (Exception ex) {
@@ -111,11 +111,11 @@ public class Glucose {
 	}
 
 	/**
-	 * Metodo responsavel por retornar os valores da glicemia dado uma data. <br>
+	 * Metodo responsavel por retornar os valores da glicemia dado um intervalo de datas. <br>
 	 * Exemplo de url: <code>http://localhost:8080/glucoseapi/findByDateBetween?startDate=2024-07-13&endDate=2024-07-14</code>
 	 * @param startDate
 	 * @param endDate
-	 * @return
+	 * @return lista daquelas refeicoes daquelas datas
 	 */
 	@GetMapping (path = "findByDateBetween", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity findByDateBetween(@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date startDate,
@@ -123,7 +123,7 @@ public class Glucose {
 
 		if (startDate != null && endDate != null) {
 			try {
-				List<GlucoseRecord> list = service.getGlucoseListByDateBetwee(startDate, endDate);
+				List<GlucoseRecord> list = portIn.getGlucoseListByDateBetween(startDate, endDate);
 				return ResponseEntity.status(HttpStatus.OK).body(list);
 
 			} catch (Exception ex) {
@@ -133,4 +133,34 @@ public class Glucose {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Datas nao informadas");
 		}
 	}
+
+	/**
+	 * Metodo responsavel por retornar os valores da glicemia dado uma refeicao e uma data. <br>
+	 * Exemplo de url: <code>http://localhost:8080/glucoseapi/findByDateAndMeal?meal=almoco&date=2024-07-13</code>
+	 * @param meal
+	 * @param date
+	 * @return
+	 */
+	@GetMapping (path = "findByDateAndMeal", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity findByDateAndMeal(@RequestParam String meal,
+											@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
+		return null;
+	}
+
+
+	/**
+	 * Metodo responsavel por retornar os valores da glicemia dado uma refeicao e um intervalo de datas. <br>
+	 * Exemplo de url: <code>http://localhost:8080/glucoseapi/findByDateBetweenAndMeal?meal=almoco&startDate=2024-07-13&endDate=2024-07-14</code>
+	 * @param meal
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	@GetMapping (path = "findByDateBetween", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity findByDateBetweenAndMeal(@RequestParam String meal,
+												   @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date startDate,
+												   @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date endDate) {
+		return null;
+	}
+
 }
