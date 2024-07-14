@@ -34,4 +34,16 @@ public class GlucosePortIn {
 	public List<GlucoseRecord> getGlucoseListByDateBetween(Date startDate, Date endDate) {
 		return portOut.getGlucoseListByDateBetween(startDate, endDate);
 	}
+
+	public List<GlucoseRecord> getGlucoseListByDateAndMeal(Date date, String meal) {
+		return portOut.getGlucoseListByDateAndMeal(date, meal);
+	}
+
+	public List<GlucoseRecord> getGlucoseListByDateBetweenAndMeal(Date startDate, Date endDate, String meal) {
+		return portOut.getGlucoseListByDateBetweenAndMeal(startDate, endDate, meal);
+	}
+
+	public void deleteById(Long id) throws Exception {
+		portOut.deleteById(id);
+	}
 }

@@ -50,4 +50,20 @@ public class GlucosePortOut {
 
         return recordList;
     }
+
+    public List<GlucoseRecord> getGlucoseListByDateAndMeal(Date date, String meal) {
+        List<GlucoseRecord> recordList = converter.convertToRecord(repository.findByDateAndMeal(date, meal));
+
+        return recordList;
+    }
+
+    public List<GlucoseRecord> getGlucoseListByDateBetweenAndMeal(Date startDate, Date endDate, String meal) {
+        List<GlucoseRecord> recordList = converter.convertToRecord(repository.findByDateBetweenAndMeal(startDate, endDate, meal));
+
+        return recordList;
+    }
+
+    public void deleteById(Long id) throws Exception {
+        repository.deleteById(id);
+    }
 }
