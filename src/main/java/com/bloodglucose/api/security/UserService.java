@@ -45,7 +45,7 @@ public class UserService {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         // Gera um token JWT para o usuário autenticado
-        return new RecoveryJwtTokenRecord(jwtTokenService.generateToken(userDetails));
+        return jwtTokenService.generateToken(userDetails);
     }
 
     // Método responsável por criar um usuário
