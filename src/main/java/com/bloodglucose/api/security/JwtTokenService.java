@@ -21,6 +21,7 @@ public class JwtTokenService {
 
     public RecoveryJwtTokenRecord generateToken(UserDetailsImpl user) {
         try {
+            
             // Define o algoritmo HMAC SHA256 para criar a assinatura do token passando a chave secreta definida
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
 
