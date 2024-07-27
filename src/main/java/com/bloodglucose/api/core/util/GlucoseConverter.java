@@ -12,15 +12,11 @@ import java.util.List;
 public class GlucoseConverter {
 	
 	public GlucoseEntity convertToEntity(GlucoseRecord record) {
-		GlucoseEntity entity = new GlucoseEntity(record.meal(), record.value(), record.datetime());
-		
-		return entity;
+		return new GlucoseEntity(record.meal(), record.value(), record.datetime());
 	}
 
 	public GlucoseRecord convertToRecord(GlucoseEntity entity) {
-		GlucoseRecord record = new GlucoseRecord(entity.getIdglucose(), entity.getMeal(), entity.getValue(), entity.getDate());
-		
-		return record;
+		return new GlucoseRecord(entity.getIdglucose(), entity.getMeal(), entity.getValue(), entity.getDate());
 	}
 
 	public List<GlucoseRecord> convertToRecord(List<GlucoseEntity> entities) {
