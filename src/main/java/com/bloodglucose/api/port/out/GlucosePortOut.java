@@ -27,19 +27,19 @@ public class GlucosePortOut {
         repository.save(entity);
     }
 
-    public List<GlucoseRecord> getGlucoseList() {
+    public List<GlucoseRecord> getGlucoseList() throws Exception {
         List<GlucoseRecord> recordList = converter.convertToRecord(repository.findAll());
 
         return recordList;
     }
 
-    public List<GlucoseRecord> getGlucoseListByMeal(String meal) {
+    public List<GlucoseRecord> getGlucoseListByMeal(String meal) throws Exception {
         List<GlucoseRecord> recordList = converter.convertToRecord(repository.findByMeal(meal));
 
         return recordList;
     }
 
-    public List<GlucoseRecord> getGlucoseListByDate(Date date) {
+    public List<GlucoseRecord> getGlucoseListByDate(Date date) throws Exception {
         List<GlucoseRecord> recordList = converter.convertToRecord(repository.findByDate(date));
 
         return recordList;
@@ -51,13 +51,13 @@ public class GlucosePortOut {
         return recordList;
     }
 
-    public List<GlucoseRecord> getGlucoseListByDateAndMeal(Date date, String meal) {
+    public List<GlucoseRecord> getGlucoseListByDateAndMeal(Date date, String meal) throws Exception {
         List<GlucoseRecord> recordList = converter.convertToRecord(repository.findByDateAndMeal(date, meal));
 
         return recordList;
     }
 
-    public List<GlucoseRecord> getGlucoseListByDateBetweenAndMeal(Date startDate, Date endDate, String meal) {
+    public List<GlucoseRecord> getGlucoseListByDateBetweenAndMeal(Date startDate, Date endDate, String meal) throws Exception {
         List<GlucoseRecord> recordList = converter.convertToRecord(repository.findByDateBetweenAndMeal(startDate, endDate, meal));
 
         return recordList;

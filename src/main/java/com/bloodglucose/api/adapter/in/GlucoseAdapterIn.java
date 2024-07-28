@@ -16,6 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("glucoseapi")
@@ -26,24 +28,29 @@ public class GlucoseAdapterIn {
 
 	@Autowired
 	private GlucoseValidator validator;
-	
+
+	static final Logger logger = LoggerFactory.getLogger(GlucoseAdapterIn.class);
+
 	@PostMapping(path = "save",
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity save(@RequestBody GlucoseRecord glucose) {
-
 		 try {
+			 logger.info("vai verificar se os dados estao validos... Glucose: ".concat(glucose.toString()));
 			 String validationMeessage = validator.validateValues(glucose);
-			 
+			 logger.info("resultado da validacao: ".concat(validationMeessage));
 			 if (GlucoseEnum.OK.toString().equals(validationMeessage)) {
+				 logger.info("vai salvar glucose no banco de dados");
 				 portIn.saveGlucose(glucose);
 			 } else {
 				 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationMeessage);
 			 }
-			 
-			return ResponseEntity.status(HttpStatus.OK).build();
+
+			 logger.info("glucose salva no banco de dados");
+			 return ResponseEntity.status(HttpStatus.OK).build();
 			 
 		 } catch (Exception ex) {
+			 logger.error("erro ao processar glucose... ".concat(ex.getMessage()));
 			 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
 		 }
 		 
@@ -56,7 +63,6 @@ public class GlucoseAdapterIn {
 	 */
 	@GetMapping (path = "findAll", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity findAll() {
-
 		try {
 			List<GlucoseRecord> list = portIn.getGlucoseList();
 			return ResponseEntity.status(HttpStatus.OK).body(list);
@@ -203,7 +209,7 @@ public class GlucoseAdapterIn {
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID invalido");
 			}
-			return  ResponseEntity.status(HttpStatus.OK).build();
+			return ResponseEntity.status(HttpStatus.OK).build();
 
 		} catch (Exception ex) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
