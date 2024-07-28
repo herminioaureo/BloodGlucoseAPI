@@ -10,11 +10,16 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 
 /**
  * Classe usada pelo Spring Security, nao remover
  */
+
+import java.util.ArrayList;
+
+
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
@@ -33,5 +38,6 @@ public class JwtUserDetailsService implements UserDetailsService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
     }
 }
