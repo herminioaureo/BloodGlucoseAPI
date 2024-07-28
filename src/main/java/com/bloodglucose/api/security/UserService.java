@@ -1,20 +1,17 @@
 package com.bloodglucose.api.security;
 
-import com.bloodglucose.api.adapter.out.UserRepositoryPortOut;
+import com.bloodglucose.api.adapter.out.UserRepositoryAdapterOut;
 import com.bloodglucose.api.core.dto.CreateUserRecord;
 import com.bloodglucose.api.core.dto.LoginUserRecord;
 import com.bloodglucose.api.core.dto.RecoveryJwtTokenRecord;
 import com.bloodglucose.api.core.entity.RoleEntity;
 import com.bloodglucose.api.core.entity.UserEntity;
-import com.bloodglucose.api.core.util.RoleName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,16 +24,16 @@ public class UserService {
     private JwtTokenService jwtTokenService;
 
     @Autowired
-    private UserRepositoryPortOut userRepository;
+    private UserRepositoryAdapterOut userRepository;
 
     @Autowired
     private SecurityConfiguration securityConfiguration;
 
     // Método responsável por autenticar um usuário e retornar um token JWT
-    public RecoveryJwtTokenRecord authenticateUser(LoginUserRecord loginUserDto) {
+    public RecoveryJwtTokenRecord authenticateUser(LoginUserRecord loginUserRecord) {
         // Cria um objeto de autenticação com o email e a senha do usuário
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(loginUserDto.email(), loginUserDto.password());
+                new UsernamePasswordAuthenticationToken(loginUserRecord.email(), loginUserRecord.password());
 
         // Autentica o usuário com as credenciais fornecidas
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);

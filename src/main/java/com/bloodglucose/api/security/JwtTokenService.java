@@ -12,6 +12,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalUnit;
 
+
 @Service
 public class JwtTokenService {
 
@@ -21,20 +22,21 @@ public class JwtTokenService {
 
     public RecoveryJwtTokenRecord generateToken(UserDetailsImpl user) {
         try {
-            
             // Define o algoritmo HMAC SHA256 para criar a assinatura do token passando a chave secreta definida
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
 
+            Instant expiresTime = expirationDate();
+
             String generatedToken = JWT.create()
-                                        .withIssuer(ISSUER) // Define o emissor do token
-                                        .withIssuedAt(creationDate()) // Define a data de emissão do token
-                                        .withExpiresAt(expirationDate()) // Define a data de expiração do token
-                                        .withSubject(user.getUsername()) // Define o assunto do token (neste caso, o nome de usuário)
-                                        .sign(algorithm); // Assina o token usando o algoritmo especificado
+                                .withIssuer(ISSUER) // Define o emissor do token
+                                .withIssuedAt(creationDate()) // Define a data de emissão do token
+                                .withExpiresAt(expiresTime) // Define a data de expiração do token
+                                .withSubject(user.getUsername()) // Define o assunto do token (neste caso, o nome de usuário)
+                                .sign(algorithm); // Assina o token usando o algoritmo especificado
 
-            String expiresAt = expirationDate().toString();
+            String expiresAt = expiresTime.toString();
 
-            return new RecoveryJwtTokenRecord(generatedToken,expiresAt);
+            return new RecoveryJwtTokenRecord(generatedToken, expiresAt);
         } catch (JWTCreationException exception){
             throw new JWTCreationException("Erro ao gerar token.", exception);
         }
