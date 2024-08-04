@@ -41,7 +41,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
                 String subject = jwtTokenService.getSubjectFromToken(token); // Obtém o assunto (neste caso, o nome de usuário) do token
                 logger.info("usuario recuperado do token... usuario: ".concat(subject));
                 try {
-                    RecoveryUserRecord recoveryUser = userPortIn.findByEmail(subject).get(0); // Busca o usuário pelo email (que é o assunto do token)
+                    RecoveryUserRecord recoveryUser = userPortIn.findByEmail(subject); // Busca o usuário pelo email (que é o assunto do token)
                     UserDetailsImpl userDetails = new UserDetailsImpl(recoveryUser); // Cria um UserDetails com o usuário encontrado
                     // Cria um objeto de autenticação do Spring Security
                     Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());

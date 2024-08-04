@@ -32,12 +32,11 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username)  {
         try {
-            List<RecoveryUserRecord> userRecord = converter.convertToRecord(repository.findByEmail(username));
-            return new UserDetailsImpl(userRecord.get(0));
+            RecoveryUserRecord userRecord = converter.convertToRecord(repository.findByEmail(username));
+            return new UserDetailsImpl(userRecord);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 }

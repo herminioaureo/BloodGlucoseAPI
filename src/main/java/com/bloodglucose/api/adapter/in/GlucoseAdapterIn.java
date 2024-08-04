@@ -36,24 +36,24 @@ public class GlucoseAdapterIn {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity save(@RequestBody GlucoseRecord glucose) {
 		 try {
-			 logger.info("vai verificar se os dados estao validos... Glucose: ".concat(glucose.toString()));
+			 logger.info("Vai verificar se os dados estao validos... Glucose: ".concat(glucose.toString()));
 			 String validationMeessage = validator.validateValues(glucose);
-			 logger.info("resultado da validacao: ".concat(validationMeessage));
+			 logger.info("Resultado da validacao: ".concat(validationMeessage));
 			 if (GlucoseEnum.OK.toString().equals(validationMeessage)) {
-				 logger.info("vai salvar glucose no banco de dados");
+				 logger.info("Vai salvar glucose no banco de dados");
 				 portIn.saveGlucose(glucose);
+				 logger.info("Glicose salva no banco de dados.");
 			 } else {
+				 logger.info("Requisicao invalida... ".concat(validationMeessage));
 				 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationMeessage);
 			 }
-
-			 logger.info("glucose salva no banco de dados");
+			 logger.info("Glicose salva no banco de dados");
 			 return ResponseEntity.status(HttpStatus.OK).build();
 			 
 		 } catch (Exception ex) {
-			 logger.error("erro ao processar glucose... ".concat(ex.getMessage()));
+			 logger.error("Erro ao processar glucose... ".concat(ex.getMessage()));
 			 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
 		 }
-		 
 	 }
 
 	/**
@@ -64,10 +64,13 @@ public class GlucoseAdapterIn {
 	@GetMapping (path = "findAll", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity findAll() {
 		try {
+			logger.info("Recuperando todas as glicemias... ");
 			List<GlucoseRecord> list = portIn.getGlucoseList();
+			logger.info("Glicemias retornadas: " + list.size());
 			return ResponseEntity.status(HttpStatus.OK).body(list);
 
 		} catch (Exception ex) {
+			logger.error("Erro ao retornar glicemias do banco de dados... ".concat(String.valueOf(ex)));
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
 		}
 	}
@@ -80,10 +83,11 @@ public class GlucoseAdapterIn {
 	 */
 	@GetMapping (path = "findByMeal", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity findByMeal(@RequestParam String meal) {
-
 		if (StringUtils.isNotEmpty(meal)) {
 			try {
+				logger.info("Recuperando todas as glicemias... refeicao: ".concat(meal));
 				List<GlucoseRecord> list = portIn.getGlucoseListByMeal(meal);
+				logger.info("Glicemias retornadas: " + list.size());
 				return ResponseEntity.status(HttpStatus.OK).body(list);
 
 			} catch (Exception ex) {
@@ -105,10 +109,13 @@ public class GlucoseAdapterIn {
 
 		if (date != null) {
 			try {
+				logger.info("Recuperando todas as glicemias... data: ".concat(date.toString()));
 				List<GlucoseRecord> list = portIn.getGlucoseListByDate(date);
+				logger.info("Glicemias retornadas: " + list.size());
 				return ResponseEntity.status(HttpStatus.OK).body(list);
 
 			} catch (Exception ex) {
+				logger.error("Erro ao retornar glicemias do banco de dados... " + ex);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
 			}
 		} else {
@@ -129,10 +136,15 @@ public class GlucoseAdapterIn {
 
 		if (startDate != null && endDate != null) {
 			try {
+				logger.info("Recuperando todas as glicemias...");
+				logger.info("Data inicial: ".concat(startDate.toString()));
+				logger.info("Data final: ".concat(endDate.toString()));
 				List<GlucoseRecord> list = portIn.getGlucoseListByDateBetween(startDate, endDate);
+				logger.info("Glicemias retornadas: " + list.size());
 				return ResponseEntity.status(HttpStatus.OK).body(list);
 
 			} catch (Exception ex) {
+				logger.error("Erro ao retornar glicemias do banco de dados... " + ex);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
 			}
 		} else {
@@ -153,10 +165,15 @@ public class GlucoseAdapterIn {
 
 		if (meal != null && date != null) {
 			try {
+				logger.info("Recuperando todas as glicemias...");
+				logger.info("Refeicao: ".concat(meal));
+				logger.info("Data: ".concat(date.toString()));
 				List<GlucoseRecord> list =  portIn.getGlucoseListByDateAndMeal(date, meal);
+				logger.info("Glicemias retornadas: " + list.size());
 				return ResponseEntity.status(HttpStatus.OK).body(list);
 
 			} catch (Exception ex) {
+				logger.error("Erro ao retornar glicemias do banco de dados... " + ex);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
 			}
 		} else {
@@ -181,10 +198,15 @@ public class GlucoseAdapterIn {
 
 		if (meal != null && startDate != null && endDate != null) {
 			try {
+				logger.info("Recuperando todas as glicemias...");
+				logger.info("Refeicao: ".concat(meal));
+				logger.info("Data inicial: ".concat(startDate.toString()));
+				logger.info("Data final: ".concat(endDate.toString()));
 				List<GlucoseRecord> list =  portIn.getGlucoseListByDateBetweenAndMeal(startDate, endDate, meal);
+				logger.info("Glicemias retornadas: " + list.size());
 				return ResponseEntity.status(HttpStatus.OK).body(list);
-
 			} catch (Exception ex) {
+				logger.error("Erro ao retornar glicemias do banco de dados... " + ex);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
 			}
 		} else {
@@ -202,16 +224,18 @@ public class GlucoseAdapterIn {
 			       consumes = MediaType.APPLICATION_JSON_VALUE,
 			       produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity deleteById(@RequestBody Long id) {
-
 		try {
+			logger.info("Removendo glicemia com ID: " + id);
 			if (id != null && id > 0) {
 				portIn.deleteById(id);
+				logger.info("Glicemia removida");
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID invalido");
 			}
 			return ResponseEntity.status(HttpStatus.OK).build();
 
 		} catch (Exception ex) {
+			logger.error("Erro ao retornar glicemias do banco de dados... " + ex);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
 		}
 	}

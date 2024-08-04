@@ -9,12 +9,8 @@ import java.util.List;
 @Service
 public class UserConverter {
 
-    public List<RecoveryUserRecord> convertToRecord(List<UserEntity> entities) {
-        List<RecoveryUserRecord> userList = new ArrayList<RecoveryUserRecord>();
-        for (UserEntity entity : entities) {
-            userList.add(new RecoveryUserRecord(entity.getId(), entity.getEmail(), entity.getPassword(), entity.getRoles()));
-        }
-        return userList;
+    public RecoveryUserRecord convertToRecord(UserEntity entity) {
+        return new RecoveryUserRecord(entity.getId(), entity.getEmail(), entity.getPassword(), entity.getRoles());
     }
 
 }

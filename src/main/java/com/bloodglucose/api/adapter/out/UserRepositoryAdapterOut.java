@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface UserRepositoryAdapterOut extends JpaRepository<UserEntity, Long> {
 
-    List<UserEntity> findByEmail(String email);
+    UserEntity findByEmail(String email);
 
 }
