@@ -16,6 +16,7 @@ public class UserAdapterIn {
     @Autowired
     private UserService userService;
 
+    @CrossOrigin(origins = "http://http://localhost:4200/")
     @PostMapping("/login")
     public ResponseEntity<RecoveryJwtTokenRecord> authenticateUser(@RequestBody LoginUserRecord loginUser) {
         RecoveryJwtTokenRecord token = userService.authenticateUser(loginUser);
