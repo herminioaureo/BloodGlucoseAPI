@@ -13,7 +13,7 @@ public class UserPortOut {
     @Autowired
     private UserRepositoryAdapterOut userRepository; // Repository que definimos anteriormente
 
-    public UserEntity findByEmail(String email) throws Exception {
-        return userRepository.findByEmail(email);
+    public UserEntity findByUsername(String email) throws Exception {
+        return userRepository.findByUsername(email);
     }
 }

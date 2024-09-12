@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepositoryPortOut extends JpaRepository<UserEntity, Long> {
 
-    Optional<UserEntity> findByEmail(String email);
+    Optional<UserEntity> findByUsername(String email);
 
 }
