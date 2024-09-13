@@ -61,6 +61,7 @@ public class GlucoseAdapterIn {
 	 * Exemplo de url: <code>http://localhost:8080/glucoseapi/findAll</code>
 	 * @return lista com todas as glicemias
 	 */
+	@CrossOrigin(origins = "http://localhost:4200/")
 	@GetMapping (path = "findAll", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity findAll() {
 		try {
