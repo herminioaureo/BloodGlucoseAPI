@@ -31,9 +31,9 @@ public class UserService {
 
     // Método responsável por autenticar um usuário e retornar um token JWT
     public RecoveryJwtTokenRecord authenticateUser(LoginUserRecord loginUserRecord) {
-        // Cria um objeto de autenticação com o email e a senha do usuário
+        // Cria um objeto de autenticação com o username e a senha do usuário
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(loginUserRecord.email(), loginUserRecord.password());
+                new UsernamePasswordAuthenticationToken(loginUserRecord.username(), loginUserRecord.password());
 
         // Autentica o usuário com as credenciais fornecidas
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
@@ -50,7 +50,7 @@ public class UserService {
 
         // Cria um novo usuário com os dados fornecidos
         UserEntity newUser = UserEntity.builder()
-                .email(createUser.email())
+                .username(createUser.email())
                 // Codifica a senha do usuário com o algoritmo bcrypt
                 .password(securityConfiguration.passwordEncoder().encode(createUser.password()))
                 // Atribui ao usuário uma permissão específica

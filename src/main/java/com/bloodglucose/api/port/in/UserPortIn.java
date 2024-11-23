@@ -17,8 +17,8 @@ public class UserPortIn {
     @Autowired
     private UserConverter userConverter;
 
-    public RecoveryUserRecord findByEmail(String email) throws Exception {
-        return userConverter.convertToRecord(portOut.findByEmail(email));
+    public RecoveryUserRecord findByUsername(String email) throws Exception {
+        return userConverter.convertToRecord(portOut.findByUsername(email));
     }
 
 }

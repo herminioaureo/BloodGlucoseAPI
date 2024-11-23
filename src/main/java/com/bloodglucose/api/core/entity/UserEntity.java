@@ -18,13 +18,13 @@ public class UserEntity {
     private Long id;
 
     @Column(unique = true)
-    private String email;
+    private String username;
 
     @Column
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinTable(name="tlb_users_roles",
+    @JoinTable(name="tbl_users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name="role_id"))
     private List<RoleEntity> roles;
@@ -38,11 +38,11 @@ public class UserEntity {
     }
 
     public String getEmail() {
-        return email;
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(String username) {
+        this.username = username;
     }
 
     public String getPassword() {

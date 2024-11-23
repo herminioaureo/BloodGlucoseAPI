@@ -36,13 +36,14 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
        logger.info("vai verificaqr se o endpoint requeer autenticacao antes de processar a requisicao");
         if (checkIfEndpointIsNotPublic(request)) {
             String token = recoveryToken(request); // Recupera o token do cabeçalho Authorization da requisição
+
             if (token != null) {
                 logger.info("token recuperado do header da requisicao. token: ".concat(token));
                 if (token.isBlank() || !token.isEmpty()) {
                     String subject = jwtTokenService.getSubjectFromToken(token); // Obtém o assunto (neste caso, o nome de usuário) do token
                     logger.info("usuario recuperado do token... usuario: ".concat(subject));
                     try {
-                        RecoveryUserRecord recoveryUser = userPortIn.findByEmail(subject); // Busca o usuário pelo email (que é o assunto do token)
+                        RecoveryUserRecord recoveryUser = userPortIn.findByUsername(subject); // Busca o usuário pelo email (que é o assunto do token)
                         UserDetailsImpl userDetails = new UserDetailsImpl(recoveryUser); // Cria um UserDetails com o usuário encontrado
                         // Cria um objeto de autenticação do Spring Security
                         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
@@ -70,6 +71,8 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     // Recupera o token do cabeçalho Authorization da requisição
     private String recoveryToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
+
+        request.toString();
         if (authorizationHeader != null) {
             return authorizationHeader.replace("Bearer ", "");
         }
