@@ -36,25 +36,32 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
        logger.info("vai verificaqr se o endpoint requeer autenticacao antes de processar a requisicao");
         if (checkIfEndpointIsNotPublic(request)) {
             String token = recoveryToken(request); // Recupera o token do cabeçalho Authorization da requisição
-            logger.info("token recuperado do header da requisicao. token: ".concat(token));
-            if (!token.isBlank() || !token.isEmpty()) {
-                String subject = jwtTokenService.getSubjectFromToken(token); // Obtém o assunto (neste caso, o nome de usuário) do token
-                logger.info("usuario recuperado do token... usuario: ".concat(subject));
-                try {
-                    RecoveryUserRecord recoveryUser = userPortIn.findByEmail(subject); // Busca o usuário pelo email (que é o assunto do token)
-                    UserDetailsImpl userDetails = new UserDetailsImpl(recoveryUser); // Cria um UserDetails com o usuário encontrado
-                    // Cria um objeto de autenticação do Spring Security
-                    Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
-                    // Define o objeto de autenticação no contexto de segurança do Spring Security
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                    logger.info("fluxo de autenticacao realizado com sucesso!");
-                } catch (Exception ex) {
-                    logger.debug("Erro ao obter dados do usuario e fazer autenticacao. " + ex.getMessage());
-                    throw new RuntimeException("Erro ao obter dados do usuario e fazer autenticacao. " + ex.getMessage());
+            if (token != null) {
+                logger.info("token recuperado do header da requisicao. token: ".concat(token));
+                if (token.isBlank() || !token.isEmpty()) {
+                    String subject = jwtTokenService.getSubjectFromToken(token); // Obtém o assunto (neste caso, o nome de usuário) do token
+                    logger.info("usuario recuperado do token... usuario: ".concat(subject));
+                    try {
+                        RecoveryUserRecord recoveryUser = userPortIn.findByEmail(subject); // Busca o usuário pelo email (que é o assunto do token)
+                        UserDetailsImpl userDetails = new UserDetailsImpl(recoveryUser); // Cria um UserDetails com o usuário encontrado
+                        // Cria um objeto de autenticação do Spring Security
+                        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
+                        // Define o objeto de autenticação no contexto de segurança do Spring Security
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        logger.info("fluxo de autenticacao realizado com sucesso!");
+                    } catch (Exception ex) {
+                        logger.debug("Erro ao obter dados do usuario e fazer autenticacao. " + ex.getMessage());
+                        throw new RuntimeException("Erro ao obter dados do usuario e fazer autenticacao. " + ex.getMessage());
+                    }
+                } else {
+                    logger.debug("o token esta ausente ou eh invalido");
+                    throw new RuntimeException("O token está ausente.");
                 }
             } else {
-                logger.debug("o token esta ausente ou eh invalido");
-                throw new RuntimeException("O token está ausente.");
+                logger.debug("o token esta ausente ou eh invalido, vai verificar se eh swagger");
+                if (request.getRequestURL().toString().contains("/swagger-ui/index.html")) {
+                    filterChain.doFilter(request, response); // Continua o processamento da requisição
+                }
             }
         }
         filterChain.doFilter(request, response); // Continua o processamento da requisição
