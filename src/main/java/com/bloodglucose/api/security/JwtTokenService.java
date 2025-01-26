@@ -17,7 +17,6 @@ import java.time.temporal.TemporalUnit;
 public class JwtTokenService {
 
     private static final String SECRET_KEY = "4Z^XrroxR@dWxqf$mTTKwW$!@#qGr4P"; // Chave secreta utilizada para gerar e verificar o token
-
     private static final String ISSUER = "bloodglucose-api"; // Emissor do token
 
     public RecoveryJwtTokenRecord generateToken(UserDetailsImpl user) {
@@ -44,6 +43,8 @@ public class JwtTokenService {
 
     public String getSubjectFromToken(String token) {
         try {
+
+            token = token.replace("\"", "");
             // Define o algoritmo HMAC SHA256 para verificar a assinatura do token passando a chave secreta definida
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
             return JWT.require(algorithm)
@@ -52,7 +53,7 @@ public class JwtTokenService {
                     .verify(token) // Verifica a validade do token
                     .getSubject(); // Obtém o assunto (neste caso, o nome de usuário) do token
         } catch (JWTVerificationException exception){
-            throw new JWTVerificationException("Token inválido ou expirado.");
+            throw new JWTVerificationException("Token inválido ou expirado.", exception);
         }
     }
 
