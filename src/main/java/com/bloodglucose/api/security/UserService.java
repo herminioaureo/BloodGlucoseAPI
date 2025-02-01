@@ -11,10 +11,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
 @Service
+@CrossOrigin
 public class UserService {
 
     @Autowired
@@ -50,7 +52,7 @@ public class UserService {
 
         // Cria um novo usuário com os dados fornecidos
         UserEntity newUser = UserEntity.builder()
-                .username(createUser.email())
+                .username(createUser.username())
                 // Codifica a senha do usuário com o algoritmo bcrypt
                 .password(securityConfiguration.passwordEncoder().encode(createUser.password()))
                 // Atribui ao usuário uma permissão específica

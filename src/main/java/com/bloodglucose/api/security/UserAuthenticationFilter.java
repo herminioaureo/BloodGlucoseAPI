@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component
+@CrossOrigin
 public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -43,7 +45,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
                     String subject = jwtTokenService.getSubjectFromToken(token); // Obtém o assunto (neste caso, o nome de usuário) do token
                     logger.info("usuario recuperado do token... usuario: ".concat(subject));
                     try {
-                        RecoveryUserRecord recoveryUser = userPortIn.findByUsername(subject); // Busca o usuário pelo email (que é o assunto do token)
+                        RecoveryUserRecord recoveryUser = userPortIn.findByUsername(subject); // Busca o usuário pelo username (que é o assunto do token)
                         UserDetailsImpl userDetails = new UserDetailsImpl(recoveryUser); // Cria um UserDetails com o usuário encontrado
                         // Cria um objeto de autenticação do Spring Security
                         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
