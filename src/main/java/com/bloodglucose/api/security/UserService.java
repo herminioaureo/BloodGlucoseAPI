@@ -31,7 +31,7 @@ public class UserService {
     @Autowired
     private SecurityConfiguration securityConfiguration;
 
-    // Método responsável por autenticar um usuário e retornar um token JWT
+    // Metodo responsável por autenticar um usuário e retornar um token JWT
     public RecoveryJwtTokenRecord authenticateUser(LoginUserRecord loginUserRecord) {
         // Cria um objeto de autenticação com o username e a senha do usuário
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
